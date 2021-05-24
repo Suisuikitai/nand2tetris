@@ -1,0 +1,22 @@
+{
+  "name": "projects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git+https://github.com/Suisuikitai/nand2tetris.git",
+  "keywords": [],
+  "author": "Suisuikitai <mag.cupw@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Suisuikitai/nand2tetris/issues"
+  },
+  "homepage": "https://github.com/Suisuikitai/nand2tetris#readme",
+  "devDependencies": {
+    "typescript": "^4.2.4",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0"
+  }
+}

@@ -1,3 +1,4 @@
 *.txt
 *.cmp
 *.tst
+node_modules/*
