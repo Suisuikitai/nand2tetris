@@ -1,5 +1,5 @@
-class Code {
-  dest(mnemonic: string | null) {
+export default class Code {
+  static dest(mnemonic: string | null) {
     if (mnemonic === null) return '000'
     let d1 = '0',
       d2 = '0',
@@ -10,7 +10,7 @@ class Code {
     return d1 + d2 + d3
   }
 
-  comp(mnemonic: string) {
+  static comp(mnemonic: string) {
     if (mnemonic === '0') return '0101010'
     if (mnemonic === '1') return '0111111'
     if (mnemonic === '-1') return '0111010'
@@ -41,7 +41,7 @@ class Code {
     if (mnemonic === 'D|M') return '1010101'
   }
 
-  jump(mnemonic: string | null): string {
+  static jump(mnemonic: string | null): string {
     if (mnemonic === null) return '000'
     if (mnemonic === 'JGT') return '001'
     if (mnemonic === 'JEQ') return '010'

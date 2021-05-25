@@ -1,39 +1,37 @@
 import { createReadStream, ReadStream, readFileSync } from 'fs'
-import * as readline from 'readline'
-
-const COMMAND_TYPE = {
+export const COMMAND_TYPE = {
   A_COMMAND: 'A',
   C_COMMAND: 'C',
   L_COMMAND: 'L',
 }
 type COMMAND_TYPE = typeof COMMAND_TYPE[keyof typeof COMMAND_TYPE]
-class Perser {
+export default class Perser {
   file: string
-  stream: ReadStream
-  readline: readline.Interface
-  current: string = ''
+  textArray: Array<string>
   type: string = ''
+  currentIndex = 0
+  current = ''
   constructor(file: string) {
     this.file = file
-    this.stream = createReadStream(file, {
-      encoding: 'utf-8',
-      highWaterMark: 256,
-    })
-    this.readline = readline.createInterface({ input: this.stream })
+    this.textArray = readFileSync(file, 'ascii')
+      .split('\n')
+      .filter((v) => {
+        return !v.startsWith('//') && v.trim() !== ''
+      })
+      .map((v) => {
+        let val = v.replace(/\s/g, '').replace(/\/\/.*$/g, '')
+        return val
+      })
   }
 
   hasMoreCommands(): boolean {
-    return this.stream.readable
+    return this.currentIndex !== this.textArray.length
   }
 
-  async advance(): Promise<void> {
-    if (!this.hasMoreCommands()) return
-
-    this.readline.once('line', (line) => {
-      if (line.startsWith('//') || line.trim() === '') this.advance()
-      this.current = line
-    })
-    this.commandType()
+  advance(): void {
+    if (this.hasMoreCommands()) {
+      this.current = this.textArray[this.currentIndex++]
+    }
   }
 
   commandType(): COMMAND_TYPE {
@@ -61,12 +59,14 @@ class Perser {
   }
 
   comp(): string {
-    if (this.current.includes('='))
+    if (this.current.includes('=') && this.current.includes(';'))
       return this.current.slice(
         this.current.indexOf('=') + 1,
         this.current.indexOf(';')
       )
-    else return this.current.slice(0, this.current.indexOf(';'))
+    else if (this.current.includes('=')) {
+      return this.current.slice(this.current.indexOf('=') + 1)
+    } else return this.current.slice(0, this.current.indexOf(';'))
   }
 
   jump(): string | null {
@@ -76,6 +76,3 @@ class Perser {
     return null
   }
 }
-
-const perser = new Perser('06/add/Add.asm')
-perser.advance()
