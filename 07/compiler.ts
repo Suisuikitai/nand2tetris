@@ -9,9 +9,9 @@ const main = async () => {
   const parser = new Parser(argv[2])
   const writer = new CodeWriter(asmFileName)
   writer.setFileName(inputFile)
+  console.log(parser.hasmoreCommands())
   while (parser.hasmoreCommands()) {
-    console.log('a')
-    parser.advance()
+    await parser.advance()
     const commandType = parser.commandType()
     let arg1 = null
     if (commandType !== COMMAND_TYPE.C_RETURN) {

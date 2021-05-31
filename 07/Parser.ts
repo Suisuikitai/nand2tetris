@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as readline from 'readline'
 //1行ずつ非同期で読みたいならある程度纏まって読み取った後
 //改行文字列で分割してさらにループするまたは、
 //1byte?(改行コードのデータ量)ずつ読み取って改行が来たら返すしかないかも
@@ -18,20 +19,27 @@ type COMMAND_TYPE = typeof COMMAND_TYPE[keyof typeof COMMAND_TYPE]
 
 export default class Parser {
   file: string
-  descriptor: number
   moreLine: boolean
+  stream: fs.ReadStream
   current: string = ''
+  rl: readline.Interface
   constructor(file: string) {
     this.file = file
-    this.descriptor = fs.openSync(file, 'r')
     this.moreLine = true
+    this.stream = fs.createReadStream(file)
+    this.rl = readline.createInterface(this.stream)
+    this.rl.on('line', (line: string) => {
+      this.current = line.replace(/\/\/.*$/, '').replace(/\s/, '')
+      if (this.current === '') this.advance()
+      console.log(this.current)
+    })
   }
 
   hasmoreCommands() {
+    return !(this.current === 'EOF')
   }
 
-  advance(){
-  }
+  async advance() {}
 
   commandType() {
     if (this.current.startsWith('push')) return COMMAND_TYPE.C_PUSH
@@ -48,3 +56,10 @@ export default class Parser {
     return this.current.split(' ')[2]
   }
 }
+
+const p = new Parser('StackArithmetic/SimpleAdd/SimpleAdd.vm')
+p.advance()
+
+const s = fs.createReadStream('07/StackArithmetic/SimpleAdd/SimpleAdd.vm')
+const rl = readline.createInterface(s)
+rl.on('line', (line) => console.log(line))

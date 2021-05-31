@@ -45,33 +45,40 @@ var asmFileName = argv[3] ? argv[3] : argv[2].slice(-3);
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
     var parser, writer, commandType, arg1, arg2;
     return __generator(this, function (_a) {
-        parser = new Parser_1["default"](argv[2]);
-        writer = new CodeWriter_1["default"](asmFileName);
-        writer.setFileName(inputFile);
-        while (parser.hasmoreCommands()) {
-            console.log('a');
-            parser.advance();
-            commandType = parser.commandType();
-            arg1 = null;
-            if (commandType !== Parser_2.COMMAND_TYPE.C_RETURN) {
-                arg1 = parser.arg1();
-            }
-            arg2 = null;
-            if (commandType === Parser_2.COMMAND_TYPE.C_PUSH ||
-                commandType === Parser_2.COMMAND_TYPE.C_POP ||
-                commandType === Parser_2.COMMAND_TYPE.C_FUNCTION ||
-                commandType === Parser_2.COMMAND_TYPE.C_CALL) {
-                arg2 = parser.arg2();
-            }
-            if (commandType == Parser_2.COMMAND_TYPE.C_ARITHMETIC) {
-                writer.writeArithmetic(parser.current);
-            }
-            else if (commandType === Parser_2.COMMAND_TYPE.C_PUSH ||
-                commandType === Parser_2.COMMAND_TYPE.C_POP) {
-                writer.writePushPop(commandType, parser.arg1(), parseInt(parser.arg2()));
-            }
+        switch (_a.label) {
+            case 0:
+                parser = new Parser_1["default"](argv[2]);
+                writer = new CodeWriter_1["default"](asmFileName);
+                writer.setFileName(inputFile);
+                console.log(parser.hasmoreCommands());
+                _a.label = 1;
+            case 1:
+                if (!parser.hasmoreCommands()) return [3 /*break*/, 3];
+                return [4 /*yield*/, parser.advance()];
+            case 2:
+                _a.sent();
+                commandType = parser.commandType();
+                arg1 = null;
+                if (commandType !== Parser_2.COMMAND_TYPE.C_RETURN) {
+                    arg1 = parser.arg1();
+                }
+                arg2 = null;
+                if (commandType === Parser_2.COMMAND_TYPE.C_PUSH ||
+                    commandType === Parser_2.COMMAND_TYPE.C_POP ||
+                    commandType === Parser_2.COMMAND_TYPE.C_FUNCTION ||
+                    commandType === Parser_2.COMMAND_TYPE.C_CALL) {
+                    arg2 = parser.arg2();
+                }
+                if (commandType == Parser_2.COMMAND_TYPE.C_ARITHMETIC) {
+                    writer.writeArithmetic(parser.current);
+                }
+                else if (commandType === Parser_2.COMMAND_TYPE.C_PUSH ||
+                    commandType === Parser_2.COMMAND_TYPE.C_POP) {
+                    writer.writePushPop(commandType, parser.arg1(), parseInt(parser.arg2()));
+                }
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/];
         }
-        return [2 /*return*/];
     });
 }); };
 main();
