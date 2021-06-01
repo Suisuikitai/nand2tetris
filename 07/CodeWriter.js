@@ -18,20 +18,12 @@ var CodeWriter = /** @class */ (function () {
         this.THIS = null;
         //RAM[4]
         this.THAT = null;
-        this.stream = fs_1.createWriteStream(file + '.asm');
+        this.stream = fs_1.createWriteStream(file);
     }
     CodeWriter.prototype.setFileName = function (fileName) {
         this.input_file = fileName;
     };
     CodeWriter.prototype.writeArithmetic = function (command) {
-        var ans = 0;
-        if (command == 'add') {
-            ans = this.stack[--this.SP] + this.stack[--this.SP];
-        }
-        if (command == 'sub') {
-            ans = this.stack[--this.SP] - this.stack[--this.SP];
-        }
-        this.stack[this.SP++] = ans;
         //アセンブリ言語としてどうなるのが正解か
         /**
          * addした結果stack[0]= 10になったとすると
@@ -42,14 +34,36 @@ var CodeWriter = /** @class */ (function () {
          * @256
          * M=D
          */
-        this.stream.write("@" + ans + "\n");
-        this.stream.write('D=A\n');
-        this.stream.write("@" + (this.SP + 256) + "\n");
-        this.stream.write('M=D\n');
+        if (command === 'add') {
+            this.stream.write('@SP\n');
+            this.stream.write('M=M-1\n');
+            this.SP--;
+            this.stream.write('A=M\n');
+            this.stream.write('D=M\n');
+            this.stream.write('@SP\n');
+            this.stream.write('A=M-1\n');
+            this.stream.write('D=D+M\n');
+            this.stream.write('@SP\n');
+            this.stream.write('A=M-1\n');
+            this.stream.write('M=D\n');
+        }
     };
-    CodeWriter.prototype.writePushPop = function (command, segment, index) {
-        if (command === Parser_1.COMMAND_TYPE.C_PUSH) {
-            if (segment === 'constructor') {
+    CodeWriter.prototype.writePushPop = function (cmdType, segment, index) {
+        /**
+         * push constant 7
+         * push constant 8
+         * これをどうやってアセンブリに変換するのが正解か
+         */
+        if (cmdType === Parser_1.COMMAND_TYPE.C_PUSH) {
+            if (segment === 'constant') {
+                //indexがnullになることはないため一旦これでよしとする
+                this.stream.write("@" + index + "\n");
+                this.stream.write('D=A\n');
+                this.stream.write('@SP\n');
+                this.stream.write('A=M\n');
+                this.stream.write('M=D\n');
+                this.stream.write('@SP\n');
+                this.stream.write('M=M+1\n');
                 this.stack[this.SP++] = index;
             }
         }

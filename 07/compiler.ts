@@ -2,38 +2,32 @@ import Parser from './Parser'
 import { COMMAND_TYPE } from './Parser'
 import CodeWriter from './CodeWriter'
 const argv = process.argv
-const inputFile = argv[2]
-const asmFileName = argv[3] ? argv[3] : argv[2].slice(-3)
+const inputFile = '07/StackArithmetic/SimpleAdd/SimpleAdd.vm'
+const asmFileName = '07/StackArithmetic/SimpleAdd/SimpleAdd.asm'
 
 const main = async () => {
-  const parser = new Parser(argv[2])
+  const parser = new Parser(inputFile)
   const writer = new CodeWriter(asmFileName)
-  writer.setFileName(inputFile)
-  console.log(parser.hasmoreCommands())
   while (parser.hasmoreCommands()) {
+    console.log(1)
     await parser.advance()
-    const commandType = parser.commandType()
-    let arg1 = null
-    if (commandType !== COMMAND_TYPE.C_RETURN) {
+    let arg1 = null,
+      arg2 = null
+    const cmdType = parser.commandType()
+    if (cmdType !== COMMAND_TYPE.C_RETURN) {
       arg1 = parser.arg1()
     }
-    let arg2 = null
     if (
-      commandType === COMMAND_TYPE.C_PUSH ||
-      commandType === COMMAND_TYPE.C_POP ||
-      commandType === COMMAND_TYPE.C_FUNCTION ||
-      commandType === COMMAND_TYPE.C_CALL
+      cmdType === COMMAND_TYPE.C_PUSH ||
+      cmdType === COMMAND_TYPE.C_POP ||
+      cmdType === COMMAND_TYPE.C_FUNCTION ||
+      cmdType === COMMAND_TYPE.C_CALL
     ) {
       arg2 = parser.arg2()
     }
-    if (commandType == COMMAND_TYPE.C_ARITHMETIC) {
-      writer.writeArithmetic(parser.current)
-    } else if (
-      commandType === COMMAND_TYPE.C_PUSH ||
-      commandType === COMMAND_TYPE.C_POP
-    ) {
-      writer.writePushPop(commandType, parser.arg1(), parseInt(parser.arg2()))
-    }
+    writer.writePushPop(cmdType, arg1, arg2)
+    console.log(parser.current[0])
+    writer.writeArithmetic(parser.current[0])
   }
 }
 

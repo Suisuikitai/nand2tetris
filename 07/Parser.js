@@ -35,6 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
+var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+};
 exports.__esModule = true;
 exports.COMMAND_TYPE = void 0;
 var fs = require("fs");
@@ -55,49 +74,96 @@ exports.COMMAND_TYPE = {
 };
 var Parser = /** @class */ (function () {
     function Parser(file) {
-        var _this = this;
-        this.current = '';
+        this.current = [];
         this.file = file;
         this.moreLine = true;
         this.stream = fs.createReadStream(file);
         this.rl = readline.createInterface(this.stream);
-        this.rl.on('line', function (line) {
-            _this.current = line.replace(/\/\/.*$/, '').replace(/\s/, '');
-            if (_this.current === '')
-                _this.advance();
-            console.log(_this.current);
-        });
     }
     Parser.prototype.hasmoreCommands = function () {
-        return !(this.current === 'EOF');
+        return !(this.current.length === 1 && this.current[0] === '');
     };
     Parser.prototype.advance = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/];
-        }); });
+        var _this = this;
+        var getLineGen = function (rl) {
+            return __asyncGenerator(this, arguments, function () {
+                var rl_1, rl_1_1, line, l, e_1_1;
+                var e_1, _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _b.trys.push([0, 7, 8, 13]);
+                            rl_1 = __asyncValues(rl);
+                            _b.label = 1;
+                        case 1: return [4 /*yield*/, __await(rl_1.next())];
+                        case 2:
+                            if (!(rl_1_1 = _b.sent(), !rl_1_1.done)) return [3 /*break*/, 6];
+                            line = rl_1_1.value;
+                            l = line
+                                .replace(/\/{2}.*$/, '')
+                                .trim()
+                                .split(' ');
+                            if (l.length === 1 && l[0] === '')
+                                return [3 /*break*/, 5];
+                            return [4 /*yield*/, __await(l)];
+                        case 3: return [4 /*yield*/, _b.sent()];
+                        case 4:
+                            _b.sent();
+                            _b.label = 5;
+                        case 5: return [3 /*break*/, 1];
+                        case 6: return [3 /*break*/, 13];
+                        case 7:
+                            e_1_1 = _b.sent();
+                            e_1 = { error: e_1_1 };
+                            return [3 /*break*/, 13];
+                        case 8:
+                            _b.trys.push([8, , 11, 12]);
+                            if (!(rl_1_1 && !rl_1_1.done && (_a = rl_1["return"]))) return [3 /*break*/, 10];
+                            return [4 /*yield*/, __await(_a.call(rl_1))];
+                        case 9:
+                            _b.sent();
+                            _b.label = 10;
+                        case 10: return [3 /*break*/, 12];
+                        case 11:
+                            if (e_1) throw e_1.error;
+                            return [7 /*endfinally*/];
+                        case 12: return [7 /*endfinally*/];
+                        case 13: return [4 /*yield*/, __await([''])];
+                        case 14: return [2 /*return*/, _b.sent()];
+                    }
+                });
+            });
+        };
+        return (function () { return __awaiter(_this, void 0, void 0, function () {
+            var val;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, getLineGen(this.rl).next()];
+                    case 1:
+                        val = (_a.sent()).value;
+                        this.current = val;
+                        return [2 /*return*/];
+                }
+            });
+        }); })();
     };
     Parser.prototype.commandType = function () {
-        if (this.current.startsWith('push'))
+        if (this.current[0] === 'push')
             return exports.COMMAND_TYPE.C_PUSH;
-        else if (this.current.startsWith('pop'))
+        else if (this.current[0] === 'pop')
             return exports.COMMAND_TYPE.C_POP;
         else
             return exports.COMMAND_TYPE.C_ARITHMETIC;
     };
     Parser.prototype.arg1 = function () {
         if (this.commandType() === exports.COMMAND_TYPE.C_ARITHMETIC)
-            return this.current;
+            return this.current[0];
         else
-            return this.current.split(' ')[1];
+            return this.current[1];
     };
     Parser.prototype.arg2 = function () {
-        return this.current.split(' ')[2];
+        return parseInt(this.current[2]);
     };
     return Parser;
 }());
 exports["default"] = Parser;
-var p = new Parser('07/StackArithmetic/SimpleAdd/SimpleAdd.vm');
-p.advance();
-var s = fs.createReadStream('07/StackArithmetic/SimpleAdd/SimpleAdd.vm');
-var rl = readline.createInterface(s);
-rl.on('line', function (line) { return console.log(line); });
