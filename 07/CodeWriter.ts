@@ -23,12 +23,11 @@ export default class CodeWriter {
      * @256
      * M=D
      */
+    this.stream.write('@SP\n')
+    this.stream.write('M=M-1\n')
+    this.stream.write('A=M\n')
+    this.stream.write('D=M\n')
     if (command === 'add') {
-      this.stream.write('@SP\n')
-      this.stream.write('M=M-1\n')
-      this.stream.write('A=M\n')
-      this.stream.write('D=M\n')
-
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n')
       this.stream.write('D=D+M\n')
@@ -36,38 +35,59 @@ export default class CodeWriter {
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n')
       this.stream.write('M=D\n')
-    } else if (command === 'eq') {
+    } else if (command === 'neg') {
       this.stream.write('@SP\n')
-      this.stream.write('M=M-1\n') //SP:258->257
-      this.stream.write('A=M\n')
-      this.stream.write('D=M\n')
+      this.stream.write('A=M-1\n')
+      this.stream.write('D=D-M\n')
 
+      this.stream.write('@SP\n')
+      this.stream.write('A=M-1\n')
+      this.stream.write('M=D\n')
+    } else if (command === 'eq') {
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      this.stream.write(`@JEQ_true${this.jumpCount}`)
+      this.stream.write(`@J_true${this.jumpCount}`)
       this.stream.write('D;JEQ')
+      this.writeAfterTrueJmp()
+    } else if (command === 'lt') {
+      this.stream.write('@SP\n')
+      this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
+      this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      this.stream.write(`@JEQ_false${this.jumpCount}`)
-      this.stream.write('0;JEQ')
+      this.stream.write(`@J_true${this.jumpCount}`)
+      this.stream.write('D;JLT')
+      this.writeAfterTrueJmp()
+    } else if (command === 'gt') {
+      this.stream.write('@SP\n')
+      this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
+      this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      //-1をstackに積む
-      this.stream.write(`(JEQ_true${this.jumpCount})`)
-      this.stream.write('A=M-1\n')
-      this.stream.write('M=1\n')
-      this.stream.write(`@END${this.jumpCount}`)
-      this.stream.write('0;JEQ')
-
-      //0をstackに積む
-      this.stream.write(`(JEQ_false${this.jumpCount})`)
-      this.stream.write('A=M-1\n')
-      this.stream.write('M=0\n')
-
-      //処理終了
-      this.stream.write(`(END${this.jumpCount})`)
-      this.jumpCount++
+      this.stream.write(`@J_true${this.jumpCount}`)
+      this.stream.write('D;JGT')
+      this.writeAfterTrueJmp()
     }
+  }
+  writeAfterTrueJmp() {
+    this.stream.write(`@J_false${this.jumpCount}`)
+    this.stream.write('0;JMP')
+
+    //-1をstackに積む
+    this.stream.write(`(J_true${this.jumpCount})`)
+    this.stream.write('A=M-1\n')
+    this.stream.write('M=1\n')
+    this.stream.write(`@END${this.jumpCount}`)
+    this.stream.write('0;JMP')
+
+    //0をstackに積む
+    this.stream.write(`(J_false${this.jumpCount})`)
+    this.stream.write('A=M-1\n')
+    this.stream.write('M=0\n')
+
+    //処理終了
+    this.stream.write(`(END${this.jumpCount})`)
+    this.jumpCount++
   }
   writePushPop(cmdType: number, segment: string | null, index: number | null) {
     /**
