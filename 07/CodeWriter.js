@@ -47,6 +47,13 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('A=M-1\n');
             this.stream.write('M=D\n');
         }
+        else if (command === 'eq') {
+            this.stream.write('@SP\n');
+            this.stream.write('M=M-1\n');
+            this.SP--;
+            this.stream.write('A=M\n');
+            this.stream.write('D=M\n');
+        }
     };
     CodeWriter.prototype.writePushPop = function (cmdType, segment, index) {
         /**
@@ -64,7 +71,6 @@ var CodeWriter = /** @class */ (function () {
                 this.stream.write('M=D\n');
                 this.stream.write('@SP\n');
                 this.stream.write('M=M+1\n');
-                this.stack[this.SP++] = index;
             }
         }
     };
