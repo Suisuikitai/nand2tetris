@@ -40,8 +40,8 @@ var Parser_1 = require("./Parser");
 var Parser_2 = require("./Parser");
 var CodeWriter_1 = require("./CodeWriter");
 var argv = process.argv;
-var inputFile = '07/StackArithmetic/SimpleAdd/SimpleAdd.vm';
-var asmFileName = '07/StackArithmetic/SimpleAdd/SimpleAdd.asm';
+var inputFile = argv[2];
+var asmFileName = argv[3];
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
     var parser, writer, arg1, arg2, cmdType;
     return __generator(this, function (_a) {

@@ -35,20 +35,21 @@ export default class Parser {
 
   advance() {
     const getLineGen = async function* (rl: readline.Interface) {
-      for await (const line of rl) {
-        const l = line
-          .replace(/\/{2}.*$/, '')
-          .trim()
-          .split(' ')
-        if (l.length === 1 && l[0] === '') continue
-        yield l
-      }
-      return ['']
-    }
-    return (async () => {
-      const val = (await getLineGen(this.rl).next()).value
-      this.current = val
-    })()
+    //   for await (const line of rl) {
+    //     const l = line
+    //       .replace(/\/{2}.*$/, '')
+    //       .trim()
+    //       .split(' ')
+    //     if (l.length === 1 && l[0] === '') continue
+    //     yield l
+    //   }
+    //   return ['']
+    // }
+    // return (async () => {
+    //   const val = (await getLineGen(this.rl).next()).value
+    //   this.current = val
+    // })()
+    
   }
 
   commandType() {

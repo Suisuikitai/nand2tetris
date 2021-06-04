@@ -2,8 +2,8 @@ import Parser from './Parser'
 import { COMMAND_TYPE } from './Parser'
 import CodeWriter from './CodeWriter'
 const argv = process.argv
-const inputFile = '07/StackArithmetic/SimpleAdd/SimpleAdd.vm'
-const asmFileName = '07/StackArithmetic/SimpleAdd/SimpleAdd.asm'
+const inputFile = argv[2]
+const asmFileName = argv[3]
 
 const main = async () => {
   const parser = new Parser(inputFile)

@@ -12,6 +12,12 @@ export default class CodeWriter {
   setFileName(fileName: string) {
     this.input_file = fileName
   }
+  writeBiFuncBefore() {
+    this.stream.write('@SP\n')
+    this.stream.write('M=M-1\n')
+    this.stream.write('A=M\n')
+    this.stream.write('D=M\n')
+  }
   writeArithmetic(command: string) {
     //アセンブリ言語としてどうなるのが正解か
     /**
@@ -23,11 +29,8 @@ export default class CodeWriter {
      * @256
      * M=D
      */
-    this.stream.write('@SP\n')
-    this.stream.write('M=M-1\n')
-    this.stream.write('A=M\n')
-    this.stream.write('D=M\n')
     if (command === 'add') {
+      this.writeBiFuncBefore()
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n')
       this.stream.write('D=D+M\n')
@@ -35,7 +38,8 @@ export default class CodeWriter {
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n')
       this.stream.write('M=D\n')
-    } else if (command === 'neg') {
+    } else if (command === 'sub') {
+      this.writeBiFuncBefore()
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n')
       this.stream.write('D=D-M\n')
@@ -44,44 +48,61 @@ export default class CodeWriter {
       this.stream.write('A=M-1\n')
       this.stream.write('M=D\n')
     } else if (command === 'eq') {
+      this.writeBiFuncBefore()
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      this.stream.write(`@J_true${this.jumpCount}`)
+      this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JEQ')
       this.writeAfterTrueJmp()
     } else if (command === 'lt') {
+      this.writeBiFuncBefore()
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      this.stream.write(`@J_true${this.jumpCount}`)
+      this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JLT')
       this.writeAfterTrueJmp()
     } else if (command === 'gt') {
+      this.writeBiFuncBefore()
       this.stream.write('@SP\n')
       this.stream.write('A=M-1\n') //A=257-1 M[257]->M[256]
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
-      this.stream.write(`@J_true${this.jumpCount}`)
+      this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JGT')
       this.writeAfterTrueJmp()
+    } else if (command === 'neg') {
+      this.stream.write('@SP\n')
+      this.stream.write('M=-M+1\n')
+    } else if (command === 'not') {
+      this.stream.write('@SP\n')
+      this.stream.write('M=!M\n')
+    } else if (command === 'and') {
+      this.writeBiFuncBefore()
+      this.stream.write('@SP\n')
+      this.stream.write('M=M&D\n')
+    } else if (command === 'or') {
+      this.writeBiFuncBefore()
+      this.stream.write('@SP\n')
+      this.stream.write('M=M|D\n')
     }
   }
   writeAfterTrueJmp() {
-    this.stream.write(`@J_false${this.jumpCount}`)
+    this.stream.write(`@J_false${this.jumpCount}\n`)
     this.stream.write('0;JMP')
 
     //-1をstackに積む
-    this.stream.write(`(J_true${this.jumpCount})`)
+    this.stream.write(`(J_true${this.jumpCount})\n`)
     this.stream.write('A=M-1\n')
     this.stream.write('M=1\n')
-    this.stream.write(`@END${this.jumpCount}`)
+    this.stream.write(`@END${this.jumpCount}\n`)
     this.stream.write('0;JMP')
 
     //0をstackに積む
-    this.stream.write(`(J_false${this.jumpCount})`)
+    this.stream.write(`(J_false${this.jumpCount})\n`)
     this.stream.write('A=M-1\n')
     this.stream.write('M=0\n')
 
