@@ -52,8 +52,8 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n'); //A=257-1 M[257]->M[256]
             this.stream.write('D=D-M\n'); //D=M[257]-M[256]
-            this.stream.write("@J_true" + this.jumpCount);
-            this.stream.write('D;JEQ');
+            this.stream.write("@J_true" + this.jumpCount + "\n");
+            this.stream.write('D;JEQ\n');
             this.writeAfterTrueJmp();
         }
         else if (command === 'lt') {
@@ -61,8 +61,8 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n'); //A=257-1 M[257]->M[256]
             this.stream.write('D=D-M\n'); //D=M[257]-M[256]
-            this.stream.write("@J_true" + this.jumpCount);
-            this.stream.write('D;JLT');
+            this.stream.write("@J_true" + this.jumpCount + "\n");
+            this.stream.write('D;JLT\n');
             this.writeAfterTrueJmp();
         }
         else if (command === 'gt') {
@@ -70,8 +70,8 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n'); //A=257-1 M[257]->M[256]
             this.stream.write('D=D-M\n'); //D=M[257]-M[256]
-            this.stream.write("@J_true" + this.jumpCount);
-            this.stream.write('D;JGT');
+            this.stream.write("@J_true" + this.jumpCount + "\n");
+            this.stream.write('D;JGT\n');
             this.writeAfterTrueJmp();
         }
         else if (command === 'neg') {
@@ -94,20 +94,20 @@ var CodeWriter = /** @class */ (function () {
         }
     };
     CodeWriter.prototype.writeAfterTrueJmp = function () {
-        this.stream.write("@J_false" + this.jumpCount);
-        this.stream.write('0;JMP');
+        this.stream.write("@J_false" + this.jumpCount + "\n");
+        this.stream.write('0;JMP\n');
         //-1をstackに積む
-        this.stream.write("(J_true" + this.jumpCount + ")");
+        this.stream.write("(J_true" + this.jumpCount + ")\n");
         this.stream.write('A=M-1\n');
         this.stream.write('M=1\n');
-        this.stream.write("@END" + this.jumpCount);
-        this.stream.write('0;JMP');
+        this.stream.write("@END" + this.jumpCount + "\n");
+        this.stream.write('0;JMP\n');
         //0をstackに積む
-        this.stream.write("(J_false" + this.jumpCount + ")");
+        this.stream.write("(J_false" + this.jumpCount + ")\n");
         this.stream.write('A=M-1\n');
         this.stream.write('M=0\n');
         //処理終了
-        this.stream.write("(END" + this.jumpCount + ")");
+        this.stream.write("(END" + this.jumpCount + ")\n");
         this.jumpCount++;
     };
     CodeWriter.prototype.writePushPop = function (cmdType, segment, index) {

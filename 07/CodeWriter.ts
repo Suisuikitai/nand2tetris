@@ -54,7 +54,7 @@ export default class CodeWriter {
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
-      this.stream.write('D;JEQ')
+      this.stream.write('D;JEQ\n')
       this.writeAfterTrueJmp()
     } else if (command === 'lt') {
       this.writeBiFuncBefore()
@@ -63,7 +63,7 @@ export default class CodeWriter {
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
-      this.stream.write('D;JLT')
+      this.stream.write('D;JLT\n')
       this.writeAfterTrueJmp()
     } else if (command === 'gt') {
       this.writeBiFuncBefore()
@@ -72,7 +72,7 @@ export default class CodeWriter {
       this.stream.write('D=D-M\n') //D=M[257]-M[256]
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
-      this.stream.write('D;JGT')
+      this.stream.write('D;JGT\n')
       this.writeAfterTrueJmp()
     } else if (command === 'neg') {
       this.stream.write('@SP\n')
@@ -92,14 +92,14 @@ export default class CodeWriter {
   }
   writeAfterTrueJmp() {
     this.stream.write(`@J_false${this.jumpCount}\n`)
-    this.stream.write('0;JMP')
+    this.stream.write('0;JMP\n')
 
     //-1をstackに積む
     this.stream.write(`(J_true${this.jumpCount})\n`)
     this.stream.write('A=M-1\n')
     this.stream.write('M=1\n')
     this.stream.write(`@END${this.jumpCount}\n`)
-    this.stream.write('0;JMP')
+    this.stream.write('0;JMP\n')
 
     //0をstackに積む
     this.stream.write(`(J_false${this.jumpCount})\n`)
@@ -107,7 +107,7 @@ export default class CodeWriter {
     this.stream.write('M=0\n')
 
     //処理終了
-    this.stream.write(`(END${this.jumpCount})`)
+    this.stream.write(`(END${this.jumpCount})\n`)
     this.jumpCount++
   }
   writePushPop(cmdType: number, segment: string | null, index: number | null) {

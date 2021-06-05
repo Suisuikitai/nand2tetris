@@ -8,9 +8,8 @@ const asmFileName = argv[3]
 const main = async () => {
   const parser = new Parser(inputFile)
   const writer = new CodeWriter(asmFileName)
-  while (parser.hasmoreCommands()) {
-    console.log(1)
-    await parser.advance()
+  await parser.advance((line: [string]) => {
+    parser.current = line
     let arg1 = null,
       arg2 = null
     const cmdType = parser.commandType()
@@ -28,7 +27,7 @@ const main = async () => {
     writer.writePushPop(cmdType, arg1, arg2)
     console.log(parser.current[0])
     writer.writeArithmetic(parser.current[0])
-  }
+  })
 }
 
 main()

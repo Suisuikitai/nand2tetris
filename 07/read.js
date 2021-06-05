@@ -31,23 +31,27 @@ const displayFile = (file) => {
 
 const readline = require('readline')
 const displayFileRL = (() => {
-  const stream = fs.createReadStream('./07/sample.txt')
+  const stream = fs.createReadStream('./07/StackArithmetic/StackTest/StackTest.vm')
+  let buffer = ''
   const rl = readline.createInterface(stream)
-  const getLineGen = async function* (a) {
-    for await (const line of rl) {
-      const l = line
-        .replace(/\/{2}.*$/, '')
-        .replace(/\s+/, ' ')
-        .trim()
-        .split(' ')
-      if (l.length === 1 && l[0] === '') {
-        continue
-      } else {
-        yield l
-      }
-    }
-  };
-  return async () => ((await getLineGen(1).next()).value)
+  for await (const chunk of rs) {
+    buffer += chunk
+  }
+  // const getLineGen = async function* (a) {
+  //   for await (const line of rl) {
+  //     const l = line
+  //       .replace(/\/{2}.*$/, '')
+  //       .replace(/\s+/, ' ')
+  //       .trim()
+  //       .split(' ')
+  //     if (l.length === 1 && l[0] === '') {
+  //       continue
+  //     } else {
+  //       yield l
+  //     }
+  //   }
+  // };
+  // return async () => ((await getLineGen(1).next()).value)
 })();
 
 const main = async () => {

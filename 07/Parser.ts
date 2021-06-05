@@ -29,27 +29,17 @@ export default class Parser {
     this.rl = readline.createInterface(this.stream)
   }
 
-  hasmoreCommands() {
-    return !(this.current.length === 1 && this.current[0] === '')
-  }
-
-  advance() {
-    const getLineGen = async function* (rl: readline.Interface) {
-    //   for await (const line of rl) {
-    //     const l = line
-    //       .replace(/\/{2}.*$/, '')
-    //       .trim()
-    //       .split(' ')
-    //     if (l.length === 1 && l[0] === '') continue
-    //     yield l
-    //   }
-    //   return ['']
-    // }
-    // return (async () => {
-    //   const val = (await getLineGen(this.rl).next()).value
-    //   this.current = val
-    // })()
-    
+  async advance(handleLine: Function): Promise<void> {
+    for await (const line of this.rl) {
+      const l = line
+        .replace(/\/{2}.*$/, '')
+        .trim()
+        .split(' ')
+      if (l.length === 1 && l[0] === '') continue
+      else {
+        handleLine(l)
+      }
+    }
   }
 
   commandType() {

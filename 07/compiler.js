@@ -43,35 +43,32 @@ var argv = process.argv;
 var inputFile = argv[2];
 var asmFileName = argv[3];
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var parser, writer, arg1, arg2, cmdType;
+    var parser, writer;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 parser = new Parser_1["default"](inputFile);
                 writer = new CodeWriter_1["default"](asmFileName);
-                _a.label = 1;
+                return [4 /*yield*/, parser.advance(function (line) {
+                        parser.current = line;
+                        var arg1 = null, arg2 = null;
+                        var cmdType = parser.commandType();
+                        if (cmdType !== Parser_2.COMMAND_TYPE.C_RETURN) {
+                            arg1 = parser.arg1();
+                        }
+                        if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH ||
+                            cmdType === Parser_2.COMMAND_TYPE.C_POP ||
+                            cmdType === Parser_2.COMMAND_TYPE.C_FUNCTION ||
+                            cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
+                            arg2 = parser.arg2();
+                        }
+                        writer.writePushPop(cmdType, arg1, arg2);
+                        console.log(parser.current[0]);
+                        writer.writeArithmetic(parser.current[0]);
+                    })];
             case 1:
-                if (!parser.hasmoreCommands()) return [3 /*break*/, 3];
-                console.log(1);
-                return [4 /*yield*/, parser.advance()];
-            case 2:
                 _a.sent();
-                arg1 = null, arg2 = null;
-                cmdType = parser.commandType();
-                if (cmdType !== Parser_2.COMMAND_TYPE.C_RETURN) {
-                    arg1 = parser.arg1();
-                }
-                if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH ||
-                    cmdType === Parser_2.COMMAND_TYPE.C_POP ||
-                    cmdType === Parser_2.COMMAND_TYPE.C_FUNCTION ||
-                    cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
-                    arg2 = parser.arg2();
-                }
-                writer.writePushPop(cmdType, arg1, arg2);
-                console.log(parser.current[0]);
-                writer.writeArithmetic(parser.current[0]);
-                return [3 /*break*/, 1];
-            case 3: return [2 /*return*/];
+                return [2 /*return*/];
         }
     });
 }); };
