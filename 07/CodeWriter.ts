@@ -6,81 +6,75 @@ export default class CodeWriter {
   stream: WriteStream
   input_file: string | null = null
   jumpCount = 0
+  tmp = 5
   constructor(file: string) {
     this.stream = createWriteStream(file)
   }
   setFileName(fileName: string) {
     this.input_file = fileName
   }
-  writeBiFuncBefore() {
+  fetchStackVal() {
     this.stream.write('@SP\n')
     this.stream.write('M=M-1\n')
     this.stream.write('A=M\n')
     this.stream.write('D=M\n')
   }
+  focusStackTop() {
+    this.stream.write('@SP\n')
+    this.stream.write('A=M-1\n')
+  }
   writeArithmetic(command: string) {
     if (command === 'add') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('D=D+M\n')
 
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.focusStackTop()
       this.stream.write('M=D\n')
     } else if (command === 'sub') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('D=M-D\n')
 
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.focusStackTop()
       this.stream.write('M=D\n')
     } else if (command === 'eq') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('D=D-M\n')
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JEQ\n')
       this.writeAfterTrueJmp()
     } else if (command === 'lt') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('D=M-D\n')
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JLT\n')
       this.writeAfterTrueJmp()
     } else if (command === 'gt') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('D=M-D\n')
 
       this.stream.write(`@J_true${this.jumpCount}\n`)
       this.stream.write('D;JGT\n')
       this.writeAfterTrueJmp()
     } else if (command === 'neg') {
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.focusStackTop()
       this.stream.write('M=-M\n')
     } else if (command === 'not') {
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.focusStackTop()
       this.stream.write('M=!M\n')
     } else if (command === 'and') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('M=M&D\n')
     } else if (command === 'or') {
-      this.writeBiFuncBefore()
-      this.stream.write('@SP\n')
-      this.stream.write('A=M-1\n')
+      this.fetchStackVal()
+      this.focusStackTop()
       this.stream.write('M=M|D\n')
     }
   }
@@ -90,16 +84,14 @@ export default class CodeWriter {
 
     //-1をstackに積む
     this.stream.write(`(J_true${this.jumpCount}) //trueのジャンプ用のラベル\n`)
-    this.stream.write('@SP\n')
-    this.stream.write('A=M-1\n')
+    this.focusStackTop()
     this.stream.write('M=-1 //スタックに-1を積む\n')
     this.stream.write(`@END${this.jumpCount}\n`)
     this.stream.write('0;JMP\n')
 
     //0をstackに積む
     this.stream.write(`(J_false${this.jumpCount})\n`)
-    this.stream.write('@SP\n')
-    this.stream.write('A=M-1\n')
+    this.focusStackTop()
     this.stream.write('M=0\n')
 
     //処理終了
@@ -107,22 +99,74 @@ export default class CodeWriter {
     this.jumpCount++
   }
   writePushPop(cmdType: number, segment: string | null, index: number | null) {
-    /**
-     * push constant 7
-     * push constant 8
-     * これをどうやってアセンブリに変換するのが正解か
-     */
     if (cmdType === COMMAND_TYPE.C_PUSH) {
-      if (segment === 'constant') {
-        //indexがnullになることはないため一旦これでよしとする
-        this.stream.write(`@${index}\n`)
-        this.stream.write('D=A\n')
-        this.stream.write('@SP\n')
-        this.stream.write('A=M\n')
-        this.stream.write('M=D\n')
-        this.stream.write('@SP\n')
-        this.stream.write('M=M+1\n')
-      }
+      this.push(segment, index)
+    } else if (cmdType === COMMAND_TYPE.C_POP) {
+      this.pop(segment, index)
     }
+  }
+  push(segment: string | null, index: number) {
+    let addr = ''
+    if (segment === 'constant') {
+      this.stream.write(`@${index}\n`)
+      this.stream.write('D=A\n')
+      this.stream.write(`@SP\n`)
+      this.stream.write('A=M\n')
+      this.stream.write('M=D\n')
+      this.stream.write(`@SP\n`)
+      this.stream.write('M=M+1\n')
+    } else if (segment === 'temp') {
+      this.stream.write(`@R${this.tmp + index}\n`)
+      this.stream.write('D=M\n')
+      this.stream.write('@SP\n')
+      this.stream.write('A=M\n')
+      this.stream.write('M=D\n')
+      this.stream.write('@SP\n')
+      this.stream.write('M=M+1\n')
+    } else {
+      if (segment === 'local') {
+        addr = 'LCL'
+      } else if (segment === 'that') {
+        addr = 'THAT'
+      } else if (segment === 'this') {
+        addr = 'THIS'
+      } else if (segment === 'argument') {
+        addr = 'ARG'
+      }
+      this.stream.write(`@${addr}\n`)
+      this.stream.write('A=M\n')
+      for (let i = 0; i < index; i++) {
+        this.stream.write('A=A+1\n')
+      }
+      this.stream.write('D=M\n')
+      this.stream.write('@SP\n')
+      this.stream.write('A=M\n')
+      this.stream.write('M=D\n')
+      this.stream.write('@SP\n')
+      this.stream.write('M=M+1\n')
+    }
+  }
+  pop(segment: string | null, index: number | null) {
+    this.fetchStackVal()
+    let addr = ''
+    if (segment === 'temp') {
+      this.stream.write('@R5\n')
+    } else {
+      if (segment === 'local') {
+        addr = 'LCL'
+      } else if (segment === 'that') {
+        addr = 'THAT'
+      } else if (segment === 'this') {
+        addr = 'THIS'
+      } else if (segment === 'argument') {
+        addr = 'ARG'
+      }
+      this.stream.write(`@${addr}\n`)
+      this.stream.write('A=M\n')
+    }
+    for (let i = 0; i < index; i++) {
+      this.stream.write('A=A+1\n')
+    }
+    this.stream.write('M=D\n')
   }
 }
