@@ -42,7 +42,7 @@ var CodeWriter = /** @class */ (function () {
             this.writeBiFuncBefore();
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n');
-            this.stream.write('D=D-M\n');
+            this.stream.write('D=M-D\n');
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n');
             this.stream.write('M=D\n');
@@ -60,7 +60,7 @@ var CodeWriter = /** @class */ (function () {
             this.writeBiFuncBefore();
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n'); //A=257-1 M[257]->M[256]
-            this.stream.write('D=D-M\n'); //D=M[257]-M[256]
+            this.stream.write('D=M-D\n'); //D=M[256]-M[257]
             this.stream.write("@J_true" + this.jumpCount + "\n");
             this.stream.write('D;JLT\n');
             this.writeAfterTrueJmp();
@@ -69,27 +69,34 @@ var CodeWriter = /** @class */ (function () {
             this.writeBiFuncBefore();
             this.stream.write('@SP\n');
             this.stream.write('A=M-1\n'); //A=257-1 M[257]->M[256]
-            this.stream.write('D=D-M\n'); //D=M[257]-M[256]
+            this.stream.write('D=M-D\n'); //D=M[256]-M[257]
             this.stream.write("@J_true" + this.jumpCount + "\n");
             this.stream.write('D;JGT\n');
             this.writeAfterTrueJmp();
         }
         else if (command === 'neg') {
+            // this.writeBiFuncBefore()
             this.stream.write('@SP\n');
-            this.stream.write('M=-M+1\n');
+            this.stream.write('A=M-1\n');
+            this.stream.write('M=-M\n');
+            // this.stream.write('M=M+1\n')
         }
         else if (command === 'not') {
+            // this.writeBiFuncBefore()
             this.stream.write('@SP\n');
+            this.stream.write('A=M-1\n');
             this.stream.write('M=!M\n');
         }
         else if (command === 'and') {
             this.writeBiFuncBefore();
             this.stream.write('@SP\n');
+            this.stream.write('A=M-1\n');
             this.stream.write('M=M&D\n');
         }
         else if (command === 'or') {
             this.writeBiFuncBefore();
             this.stream.write('@SP\n');
+            this.stream.write('A=M-1\n');
             this.stream.write('M=M|D\n');
         }
     };
@@ -97,13 +104,15 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write("@J_false" + this.jumpCount + "\n");
         this.stream.write('0;JMP\n');
         //-1をstackに積む
-        this.stream.write("(J_true" + this.jumpCount + ")\n");
+        this.stream.write("(J_true" + this.jumpCount + ") //true\u306E\u30B8\u30E3\u30F3\u30D7\u7528\u306E\u30E9\u30D9\u30EB\n");
+        this.stream.write('@SP\n');
         this.stream.write('A=M-1\n');
-        this.stream.write('M=1\n');
+        this.stream.write('M=-1 //スタックに-1を積む\n');
         this.stream.write("@END" + this.jumpCount + "\n");
         this.stream.write('0;JMP\n');
         //0をstackに積む
         this.stream.write("(J_false" + this.jumpCount + ")\n");
+        this.stream.write('@SP\n');
         this.stream.write('A=M-1\n');
         this.stream.write('M=0\n');
         //処理終了

@@ -23,12 +23,14 @@ D=D-M
 D;JEQ
 @J_false0
 0;JMP
-(J_true0)
+(J_true0) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END0
 0;JMP
 (J_false0)
+@SP
 A=M-1
 M=0
 (END0)
@@ -57,12 +59,14 @@ D=D-M
 D;JEQ
 @J_false1
 0;JMP
-(J_true1)
+(J_true1) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END1
 0;JMP
 (J_false1)
+@SP
 A=M-1
 M=0
 (END1)
@@ -91,12 +95,14 @@ D=D-M
 D;JEQ
 @J_false2
 0;JMP
-(J_true2)
+(J_true2) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END2
 0;JMP
 (J_false2)
+@SP
 A=M-1
 M=0
 (END2)
@@ -120,17 +126,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true3
 D;JLT
 @J_false3
 0;JMP
-(J_true3)
+(J_true3) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END3
 0;JMP
 (J_false3)
+@SP
 A=M-1
 M=0
 (END3)
@@ -154,17 +162,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true4
 D;JLT
 @J_false4
 0;JMP
-(J_true4)
+(J_true4) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END4
 0;JMP
 (J_false4)
+@SP
 A=M-1
 M=0
 (END4)
@@ -188,17 +198,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true5
 D;JLT
 @J_false5
 0;JMP
-(J_true5)
+(J_true5) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END5
 0;JMP
 (J_false5)
+@SP
 A=M-1
 M=0
 (END5)
@@ -222,17 +234,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true6
 D;JGT
 @J_false6
 0;JMP
-(J_true6)
+(J_true6) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END6
 0;JMP
 (J_false6)
+@SP
 A=M-1
 M=0
 (END6)
@@ -256,17 +270,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true7
 D;JGT
 @J_false7
 0;JMP
-(J_true7)
+(J_true7) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END7
 0;JMP
 (J_false7)
+@SP
 A=M-1
 M=0
 (END7)
@@ -290,17 +306,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @J_true8
 D;JGT
 @J_false8
 0;JMP
-(J_true8)
+(J_true8) //trueのジャンプ用のラベル
+@SP
 A=M-1
-M=1
+M=-1 //スタックに-1を積む
 @END8
 0;JMP
 (J_false8)
+@SP
 A=M-1
 M=0
 (END8)
@@ -348,17 +366,19 @@ A=M
 D=M
 @SP
 A=M-1
-D=D-M
+D=M-D
 @SP
 A=M-1
 M=D
 @SP
-M=-M+1
+A=M-1
+M=-M
 @SP
 M=M-1
 A=M
 D=M
 @SP
+A=M-1
 M=M&D
 @82
 D=A
@@ -372,6 +392,8 @@ M=M-1
 A=M
 D=M
 @SP
+A=M-1
 M=M|D
 @SP
+A=M-1
 M=!M
