@@ -43,12 +43,14 @@ var argv = process.argv;
 var inputFile = argv[2];
 var asmFileName = argv[3];
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var parser, writer;
+    var parser, writer, fileName;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 parser = new Parser_1["default"](inputFile);
                 writer = new CodeWriter_1["default"](asmFileName);
+                fileName = inputFile.split('/').slice(-1)[0];
+                writer.setFileName(fileName.slice(0, -3));
                 return [4 /*yield*/, parser.advance(function (line) {
                         parser.current = line;
                         var arg1 = null, arg2 = null;

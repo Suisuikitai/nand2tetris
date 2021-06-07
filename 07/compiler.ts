@@ -8,6 +8,8 @@ const asmFileName = argv[3]
 const main = async () => {
   const parser = new Parser(inputFile)
   const writer = new CodeWriter(asmFileName)
+  let fileName = inputFile.split('/').slice(-1)[0]
+  writer.setFileName(fileName.slice(0, -3))
   await parser.advance((line: [string]) => {
     parser.current = line
     let arg1 = null,

@@ -105,25 +105,30 @@ export default class CodeWriter {
       this.pop(segment, index)
     }
   }
+  pushStack() {
+    this.stream.write('@SP\n')
+    this.stream.write('A=M\n')
+    this.stream.write('M=D\n')
+    this.stream.write('@SP\n')
+    this.stream.write('M=M+1\n')
+  }
   push(segment: string | null, index: number) {
-    let addr = ''
     if (segment === 'constant') {
       this.stream.write(`@${index}\n`)
       this.stream.write('D=A\n')
-      this.stream.write(`@SP\n`)
-      this.stream.write('A=M\n')
-      this.stream.write('M=D\n')
-      this.stream.write(`@SP\n`)
-      this.stream.write('M=M+1\n')
     } else if (segment === 'temp') {
       this.stream.write(`@R${this.tmp + index}\n`)
       this.stream.write('D=M\n')
-      this.stream.write('@SP\n')
-      this.stream.write('A=M\n')
-      this.stream.write('M=D\n')
-      this.stream.write('@SP\n')
-      this.stream.write('M=M+1\n')
+    } else if (segment === 'static') {
+      // this.stream.write(`@${this.input_file}.${index}\n`)
+      // this.stream.write('D=M\n')
+      this.stream.write('@16\n')
+      this.stream.write('D=A\n')
+      this.stream.write(`@${index}\n`)
+      this.stream.write('A=D+A\n')
+      this.stream.write('D=M\n')
     } else {
+      let addr = ''
       if (segment === 'local') {
         addr = 'LCL'
       } else if (segment === 'that') {
@@ -139,18 +144,16 @@ export default class CodeWriter {
         this.stream.write('A=A+1\n')
       }
       this.stream.write('D=M\n')
-      this.stream.write('@SP\n')
-      this.stream.write('A=M\n')
-      this.stream.write('M=D\n')
-      this.stream.write('@SP\n')
-      this.stream.write('M=M+1\n')
     }
+    this.pushStack()
   }
   pop(segment: string | null, index: number | null) {
     this.fetchStackVal()
     let addr = ''
     if (segment === 'temp') {
       this.stream.write('@R5\n')
+    } else if (segment === 'static') {
+      this.stream.write('@16\n')
     } else {
       if (segment === 'local') {
         addr = 'LCL'
