@@ -99,7 +99,7 @@ export default class CodeWriter {
     this.stream.write(`(END${this.jumpCount})\n`)
     this.jumpCount++
   }
-  writePushPop(cmdType: number, segment: string | null, index: number | null) {
+  writePushPop(cmdType: number, segment: string | null, index: number) {
     if (cmdType === COMMAND_TYPE.C_PUSH) {
       this.push(segment, index)
     } else if (cmdType === COMMAND_TYPE.C_POP) {
@@ -154,7 +154,7 @@ export default class CodeWriter {
     }
     this.pushStack()
   }
-  pop(segment: string | null, index: number | null) {
+  pop(segment: string | null, index: number) {
     this.fetchStackVal()
     let addr = ''
     if (segment === 'temp') {
