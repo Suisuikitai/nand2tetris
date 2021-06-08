@@ -1,8 +1,5 @@
 import * as fs from 'fs'
 import * as readline from 'readline'
-//1行ずつ非同期で読みたいならある程度纏まって読み取った後
-//改行文字列で分割してさらにループするまたは、
-//1byte?(改行コードのデータ量)ずつ読み取って改行が来たら返すしかないかも
 export const COMMAND_TYPE = {
   C_ARITHMETIC: 1,
   C_PUSH: 2,

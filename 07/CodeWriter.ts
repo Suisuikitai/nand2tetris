@@ -7,6 +7,7 @@ export default class CodeWriter {
   input_file: string | null = null
   jumpCount = 0
   tmp = 5
+  pointer = 3
   constructor(file: string) {
     this.stream = createWriteStream(file)
   }
@@ -127,6 +128,12 @@ export default class CodeWriter {
       this.stream.write(`@${index}\n`)
       this.stream.write('A=D+A\n')
       this.stream.write('D=M\n')
+    } else if (segment === 'pointer') {
+      this.stream.write(`@${this.pointer}\n`)
+      this.stream.write('D=A\n')
+      this.stream.write(`@${index}\n`)
+      this.stream.write('A=D+A\n')
+      this.stream.write('D=M\n')
     } else {
       let addr = ''
       if (segment === 'local') {
@@ -154,6 +161,8 @@ export default class CodeWriter {
       this.stream.write('@R5\n')
     } else if (segment === 'static') {
       this.stream.write('@16\n')
+    } else if (segment === 'pointer') {
+      this.stream.write(`@${this.pointer}\n`)
     } else {
       if (segment === 'local') {
         addr = 'LCL'

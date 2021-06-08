@@ -8,6 +8,7 @@ var CodeWriter = /** @class */ (function () {
         this.input_file = null;
         this.jumpCount = 0;
         this.tmp = 5;
+        this.pointer = 3;
         this.stream = fs_1.createWriteStream(file);
     }
     CodeWriter.prototype.setFileName = function (fileName) {
@@ -131,6 +132,13 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('A=D+A\n');
             this.stream.write('D=M\n');
         }
+        else if (segment === 'pointer') {
+            this.stream.write("@" + this.pointer + "\n");
+            this.stream.write('D=A\n');
+            this.stream.write("@" + index + "\n");
+            this.stream.write('A=D+A\n');
+            this.stream.write('D=M\n');
+        }
         else {
             var addr = '';
             if (segment === 'local') {
@@ -162,6 +170,9 @@ var CodeWriter = /** @class */ (function () {
         }
         else if (segment === 'static') {
             this.stream.write('@16\n');
+        }
+        else if (segment === 'pointer') {
+            this.stream.write("@" + this.pointer + "\n");
         }
         else {
             if (segment === 'local') {
