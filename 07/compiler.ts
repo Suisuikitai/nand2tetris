@@ -10,6 +10,7 @@ const main = async () => {
   const writer = new CodeWriter(asmFileName)
   let fileName = inputFile.split('/').slice(-1)[0]
   writer.setFileName(fileName.slice(0, -3))
+  writer.writeInit()
   await parser.advance((line: [string]) => {
     parser.current = line
     let arg1 = null,
@@ -34,8 +35,8 @@ const main = async () => {
     ) {
       arg2 = parser.arg2()
       writer.writePushPop(cmdType, arg1, arg2)
-      writer.writeArithmetic(parser.current[0])
     }
+    writer.writeArithmetic(parser.current[0])
   })
 }
 

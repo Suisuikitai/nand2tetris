@@ -51,10 +51,13 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 writer = new CodeWriter_1["default"](asmFileName);
                 fileName = inputFile.split('/').slice(-1)[0];
                 writer.setFileName(fileName.slice(0, -3));
+                writer.writeInit();
                 return [4 /*yield*/, parser.advance(function (line) {
                         parser.current = line;
+                        console.log(parser.current);
                         var arg1 = null, arg2 = null;
                         var cmdType = parser.commandType();
+                        console.log(cmdType);
                         if (cmdType === Parser_2.COMMAND_TYPE.C_RETURN) {
                             // arg1 = parser.arg1()
                             return;
@@ -75,8 +78,8 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                             cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
                             arg2 = parser.arg2();
                             writer.writePushPop(cmdType, arg1, arg2);
-                            writer.writeArithmetic(parser.current[0]);
                         }
+                        writer.writeArithmetic(parser.current[0]);
                     })];
             case 1:
                 _a.sent();

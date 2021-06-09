@@ -99,7 +99,7 @@ export default class CodeWriter {
     this.stream.write(`(END${this.jumpCount})\n`)
     this.jumpCount++
   }
-  writePushPop(cmdType: number, segment: string | null, index: number) {
+  writePushPop(cmdType: number, segment: string, index: number) {
     if (cmdType === COMMAND_TYPE.C_PUSH) {
       this.push(segment, index)
     } else if (cmdType === COMMAND_TYPE.C_POP) {
