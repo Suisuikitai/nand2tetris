@@ -42,6 +42,9 @@ export default class Parser {
   commandType() {
     if (this.current[0] === 'push') return COMMAND_TYPE.C_PUSH
     else if (this.current[0] === 'pop') return COMMAND_TYPE.C_POP
+    else if (this.current[0] === 'label') return COMMAND_TYPE.C_LABEL
+    else if (this.current[0] === 'goto') return COMMAND_TYPE.C_GOTO
+    else if (this.current[0] === 'if-goto') return COMMAND_TYPE.C_IF
     else return COMMAND_TYPE.C_ARITHMETIC
   }
 

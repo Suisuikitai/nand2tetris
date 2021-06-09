@@ -117,6 +117,12 @@ var Parser = /** @class */ (function () {
             return exports.COMMAND_TYPE.C_PUSH;
         else if (this.current[0] === 'pop')
             return exports.COMMAND_TYPE.C_POP;
+        else if (this.current[0] === 'label')
+            return exports.COMMAND_TYPE.C_LABEL;
+        else if (this.current[0] === 'goto')
+            return exports.COMMAND_TYPE.C_GOTO;
+        else if (this.current[0] === 'if-goto')
+            return exports.COMMAND_TYPE.C_IF;
         else
             return exports.COMMAND_TYPE.C_ARITHMETIC;
     };

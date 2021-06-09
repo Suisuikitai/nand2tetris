@@ -113,6 +113,24 @@ export default class CodeWriter {
     this.stream.write('@SP\n')
     this.stream.write('M=M+1\n')
   }
+  writeInit() {
+    this.stream.write('@256\n')
+    this.stream.write('D=A\n')
+    this.stream.write('@SP\n')
+    this.stream.write('A=D\n')
+  }
+  writeLabel(label: string) {
+    this.stream.write(`(${label})\n`)
+  }
+  writeGoto(label: string) {
+    this.stream.write(`@${label}\n`)
+    this.stream.write('0;JMP')
+  }
+  writeIf(label: string) {
+    this.fetchStackVal()
+    this.stream.write(`@${label}\n`)
+    this.stream.write('D;JLT\n')
+  }
   push(segment: string | null, index: number) {
     if (segment === 'constant') {
       this.stream.write(`@${index}\n`)
@@ -121,8 +139,6 @@ export default class CodeWriter {
       this.stream.write(`@R${this.tmp + index}\n`)
       this.stream.write('D=M\n')
     } else if (segment === 'static') {
-      // this.stream.write(`@${this.input_file}.${index}\n`)
-      // this.stream.write('D=M\n')
       this.stream.write('@16\n')
       this.stream.write('D=A\n')
       this.stream.write(`@${index}\n`)

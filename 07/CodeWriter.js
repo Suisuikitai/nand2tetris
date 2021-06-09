@@ -114,6 +114,24 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('@SP\n');
         this.stream.write('M=M+1\n');
     };
+    CodeWriter.prototype.writeInit = function () {
+        this.stream.write('@256\n');
+        this.stream.write('D=A\n');
+        this.stream.write('@SP\n');
+        this.stream.write('A=D\n');
+    };
+    CodeWriter.prototype.writeLabel = function (label) {
+        this.stream.write("(" + label + ")\n");
+    };
+    CodeWriter.prototype.writeGoto = function (label) {
+        this.stream.write("@" + label + "\n");
+        this.stream.write('0;JMP');
+    };
+    CodeWriter.prototype.writeIf = function (label) {
+        this.fetchStackVal();
+        this.stream.write("@" + label + "\n");
+        this.stream.write('D;JLT\n');
+    };
     CodeWriter.prototype.push = function (segment, index) {
         if (segment === 'constant') {
             this.stream.write("@" + index + "\n");
@@ -124,8 +142,6 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('D=M\n');
         }
         else if (segment === 'static') {
-            // this.stream.write(`@${this.input_file}.${index}\n`)
-            // this.stream.write('D=M\n')
             this.stream.write('@16\n');
             this.stream.write('D=A\n');
             this.stream.write("@" + index + "\n");

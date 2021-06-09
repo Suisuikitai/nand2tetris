@@ -55,18 +55,28 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                         parser.current = line;
                         var arg1 = null, arg2 = null;
                         var cmdType = parser.commandType();
-                        if (cmdType !== Parser_2.COMMAND_TYPE.C_RETURN) {
-                            arg1 = parser.arg1();
+                        if (cmdType === Parser_2.COMMAND_TYPE.C_RETURN) {
+                            // arg1 = parser.arg1()
+                            return;
                         }
-                        if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH ||
+                        arg1 = parser.arg1();
+                        if (cmdType === Parser_2.COMMAND_TYPE.C_LABEL) {
+                            writer.writeLabel(arg1);
+                        }
+                        else if (cmdType === Parser_2.COMMAND_TYPE.C_GOTO) {
+                            writer.writeGoto(arg1);
+                        }
+                        else if (cmdType === Parser_2.COMMAND_TYPE.C_IF) {
+                            writer.writeIf(arg1);
+                        }
+                        else if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH ||
                             cmdType === Parser_2.COMMAND_TYPE.C_POP ||
                             cmdType === Parser_2.COMMAND_TYPE.C_FUNCTION ||
                             cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
                             arg2 = parser.arg2();
+                            writer.writePushPop(cmdType, arg1, arg2);
+                            writer.writeArithmetic(parser.current[0]);
                         }
-                        writer.writePushPop(cmdType, arg1, arg2);
-                        console.log(parser.current[0]);
-                        writer.writeArithmetic(parser.current[0]);
                     })];
             case 1:
                 _a.sent();
