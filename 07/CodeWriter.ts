@@ -114,23 +114,65 @@ export default class CodeWriter {
     this.stream.write('M=M+1\n')
   }
   writeInit() {
-    this.stream.write('@256\n')
-    this.stream.write('D=A\n')
-    this.stream.write('@SP\n')
-    this.stream.write('A=D\n')
+    // this.stream.write('@256\n')
+    // this.stream.write('D=A\n')
+    // this.stream.write('@SP\n')
+    // this.stream.write('A=D\n')
   }
   writeLabel(label: string) {
     this.stream.write(`(${label})\n`)
   }
   writeGoto(label: string) {
     this.stream.write(`@${label}\n`)
-    this.stream.write('0;JMP')
+    this.stream.write('0;JMP\n')
   }
   writeIf(label: string) {
     this.fetchStackVal()
     this.stream.write(`@${label}\n`)
     this.stream.write('D;JLT\n')
     this.stream.write('D;JGT\n')
+  }
+  writeCall(functionName: string, numArgs: number) {
+    //call assembly
+  }
+  writeReturn() {
+    this.stream.write('@LCL\n')
+    this.stream.write('D=A\n')
+    this.stream.write('@5\n')
+    this.stream.write('D=D-A\n')
+    this.stream.write('@RET\n')
+    this.stream.write('M=D\n')
+
+    this.fetchStackVal()
+    this.stream.write('@SP\n')
+    this.stream.write('A=D+1\n')
+
+    this.stream.write('@RET\n')
+    this.stream.write('D=A\n')
+
+    this.stream.write('@LCL\n')
+    this.stream.write('AD=D+1\n')
+
+    this.stream.write('@ARG\n')
+    this.stream.write('AD=D+1\n')
+
+    this.stream.write('@THIS\n')
+    this.stream.write('AD=D+1\n')
+
+    this.stream.write('@THAT\n')
+    this.stream.write('AD=D+1\n')
+    //return assembly
+  }
+  writeFunction(functionName: string, numLocals: number) {
+    //function assembly
+    this.stream.write(`(${functionName})\n`)
+    this.stream.write('@SP\n')
+    this.stream.write('A=M\n')
+    for (let i = 0; i < numLocals; i++) {
+      this.stream.write('M=0\n')
+      this.stream.write('@SP\n')
+      this.stream.write('AM=M+1\n')
+    }
   }
   push(segment: string | null, index: number) {
     if (segment === 'constant') {

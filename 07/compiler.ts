@@ -17,7 +17,7 @@ const main = async () => {
       arg2 = null
     const cmdType = parser.commandType()
     if (cmdType === COMMAND_TYPE.C_RETURN) {
-      // arg1 = parser.arg1()
+      writer.writeReturn()
       return
     }
     arg1 = parser.arg1()
@@ -30,11 +30,13 @@ const main = async () => {
     } else if (
       cmdType === COMMAND_TYPE.C_PUSH ||
       cmdType === COMMAND_TYPE.C_POP ||
-      cmdType === COMMAND_TYPE.C_FUNCTION ||
       cmdType === COMMAND_TYPE.C_CALL
     ) {
       arg2 = parser.arg2()
       writer.writePushPop(cmdType, arg1, arg2)
+    } else if (cmdType === COMMAND_TYPE.C_FUNCTION) {
+      arg2 = parser.arg2()
+      writer.writeFunction(arg1, arg2)
     }
     writer.writeArithmetic(parser.current[0])
   })

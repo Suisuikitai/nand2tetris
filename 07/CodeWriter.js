@@ -115,23 +115,59 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('M=M+1\n');
     };
     CodeWriter.prototype.writeInit = function () {
-        this.stream.write('@256\n');
-        this.stream.write('D=A\n');
-        this.stream.write('@SP\n');
-        this.stream.write('A=D\n');
+        // this.stream.write('@256\n')
+        // this.stream.write('D=A\n')
+        // this.stream.write('@SP\n')
+        // this.stream.write('A=D\n')
     };
     CodeWriter.prototype.writeLabel = function (label) {
         this.stream.write("(" + label + ")\n");
     };
     CodeWriter.prototype.writeGoto = function (label) {
         this.stream.write("@" + label + "\n");
-        this.stream.write('0;JMP');
+        this.stream.write('0;JMP\n');
     };
     CodeWriter.prototype.writeIf = function (label) {
         this.fetchStackVal();
         this.stream.write("@" + label + "\n");
         this.stream.write('D;JLT\n');
         this.stream.write('D;JGT\n');
+    };
+    CodeWriter.prototype.writeCall = function (functionName, numArgs) {
+        //call assembly
+    };
+    CodeWriter.prototype.writeReturn = function () {
+        this.stream.write('@LCL\n');
+        this.stream.write('D=A\n');
+        this.stream.write('@5\n');
+        this.stream.write('D=D-A\n');
+        this.stream.write('@RET\n');
+        this.stream.write('M=D\n');
+        this.fetchStackVal();
+        this.stream.write('@SP\n');
+        this.stream.write('A=D+1\n');
+        this.stream.write('@RET\n');
+        this.stream.write('D=A\n');
+        this.stream.write('@LCL\n');
+        this.stream.write('AD=D+1\n');
+        this.stream.write('@ARG\n');
+        this.stream.write('AD=D+1\n');
+        this.stream.write('@THIS\n');
+        this.stream.write('AD=D+1\n');
+        this.stream.write('@THAT\n');
+        this.stream.write('AD=D+1\n');
+        //return assembly
+    };
+    CodeWriter.prototype.writeFunction = function (functionName, numLocals) {
+        //function assembly
+        this.stream.write("(" + functionName + ")\n");
+        this.stream.write('@SP\n');
+        this.stream.write('A=M\n');
+        for (var i = 0; i < numLocals; i++) {
+            this.stream.write('M=0\n');
+            this.stream.write('@SP\n');
+            this.stream.write('AM=M+1\n');
+        }
     };
     CodeWriter.prototype.push = function (segment, index) {
         if (segment === 'constant') {
