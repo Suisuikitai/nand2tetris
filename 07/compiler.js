@@ -54,10 +54,8 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 writer.writeInit();
                 return [4 /*yield*/, parser.advance(function (line) {
                         parser.current = line;
-                        console.log(parser.current);
                         var arg1 = null, arg2 = null;
                         var cmdType = parser.commandType();
-                        console.log(cmdType);
                         if (cmdType === Parser_2.COMMAND_TYPE.C_RETURN) {
                             // arg1 = parser.arg1()
                             return;

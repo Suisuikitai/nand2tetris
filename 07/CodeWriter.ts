@@ -130,6 +130,7 @@ export default class CodeWriter {
     this.fetchStackVal()
     this.stream.write(`@${label}\n`)
     this.stream.write('D;JLT\n')
+    this.stream.write('D;JGT\n')
   }
   push(segment: string | null, index: number) {
     if (segment === 'constant') {

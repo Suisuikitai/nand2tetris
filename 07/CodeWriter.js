@@ -131,6 +131,7 @@ var CodeWriter = /** @class */ (function () {
         this.fetchStackVal();
         this.stream.write("@" + label + "\n");
         this.stream.write('D;JLT\n');
+        this.stream.write('D;JGT\n');
     };
     CodeWriter.prototype.push = function (segment, index) {
         if (segment === 'constant') {
