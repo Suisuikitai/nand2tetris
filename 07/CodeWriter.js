@@ -166,7 +166,8 @@ var CodeWriter = /** @class */ (function () {
         for (var i = 0; i < numLocals; i++) {
             this.stream.write('M=0\n');
             this.stream.write('@SP\n');
-            this.stream.write('AM=M+1\n');
+            this.stream.write('M=M+1\n');
+            this.stream.write('A=M\n');
         }
     };
     CodeWriter.prototype.push = function (segment, index) {

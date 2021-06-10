@@ -123,6 +123,12 @@ var Parser = /** @class */ (function () {
             return exports.COMMAND_TYPE.C_GOTO;
         else if (this.current[0] === 'if-goto')
             return exports.COMMAND_TYPE.C_IF;
+        else if (this.current[0] === 'function')
+            return exports.COMMAND_TYPE.C_FUNCTION;
+        else if (this.current[0] === 'return')
+            return exports.COMMAND_TYPE.C_RETURN;
+        else if (this.current[0] === 'call')
+            return exports.COMMAND_TYPE.C_CALL;
         else
             return exports.COMMAND_TYPE.C_ARITHMETIC;
     };

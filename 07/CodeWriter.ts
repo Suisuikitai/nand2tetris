@@ -171,7 +171,8 @@ export default class CodeWriter {
     for (let i = 0; i < numLocals; i++) {
       this.stream.write('M=0\n')
       this.stream.write('@SP\n')
-      this.stream.write('AM=M+1\n')
+      this.stream.write('M=M+1\n')
+      this.stream.write('A=M\n')
     }
   }
   push(segment: string | null, index: number) {

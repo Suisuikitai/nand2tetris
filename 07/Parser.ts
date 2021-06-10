@@ -45,6 +45,9 @@ export default class Parser {
     else if (this.current[0] === 'label') return COMMAND_TYPE.C_LABEL
     else if (this.current[0] === 'goto') return COMMAND_TYPE.C_GOTO
     else if (this.current[0] === 'if-goto') return COMMAND_TYPE.C_IF
+    else if (this.current[0] === 'function') return COMMAND_TYPE.C_FUNCTION
+    else if (this.current[0] === 'return') return COMMAND_TYPE.C_RETURN
+    else if (this.current[0] === 'call') return COMMAND_TYPE.C_CALL
     else return COMMAND_TYPE.C_ARITHMETIC
   }
 
