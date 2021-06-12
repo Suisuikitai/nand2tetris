@@ -108,7 +108,6 @@ export default class CodeWriter {
     }
   }
   pushStack() {
-    this.stream.write('D=M\n')
     this.stream.write('@SP\n')
     this.stream.write('A=M\n')
     this.stream.write('M=D\n')
@@ -116,12 +115,12 @@ export default class CodeWriter {
     this.stream.write('M=M+1\n')
   }
   writeInit() {
-    this.stream.write('@256\n')
-    this.stream.write('D=A\n')
-    this.stream.write('@SP\n')
-    this.stream.write('M=D\n')
-
-    this.writeCall('Sys.init', 0)
+    // this.stream.write('@256\n')
+    // this.stream.write('D=A\n')
+    // this.stream.write('@SP\n')
+    // this.stream.write('M=D\n')
+    // this.writeFunction('Sys.init', 0)
+    // this.writeCall('Sys.init', 0)
   }
   writeLabel(label: string) {
     this.stream.write(`(${label})\n`)
@@ -138,18 +137,23 @@ export default class CodeWriter {
   }
   writeCall(functionName: string, numArgs: number) {
     this.stream.write(`@${functionName}_${this.funcCount}\n`)
+    this.stream.write('D=M\n')
     this.pushStack()
 
     this.stream.write('@LCL\n')
+    this.stream.write('D=M\n')
     this.pushStack()
 
     this.stream.write('@ARG\n')
+    this.stream.write('D=M\n')
     this.pushStack()
 
     this.stream.write('@THIS\n')
+    this.stream.write('D=M\n')
     this.pushStack()
 
     this.stream.write('@THAT\n')
+    this.stream.write('D=M\n')
     this.pushStack()
 
     this.stream.write('@5\n')

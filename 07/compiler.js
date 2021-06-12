@@ -72,14 +72,14 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                         }
                         else {
                             arg2 = parser.arg2();
-                            if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH ||
-                                cmdType === Parser_2.COMMAND_TYPE.C_POP ||
-                                cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
+                            if (cmdType === Parser_2.COMMAND_TYPE.C_PUSH || cmdType === Parser_2.COMMAND_TYPE.C_POP) {
                                 writer.writePushPop(cmdType, arg1, arg2);
                             }
                             else if (cmdType === Parser_2.COMMAND_TYPE.C_FUNCTION) {
-                                arg2 = parser.arg2();
                                 writer.writeFunction(arg1, arg2);
+                            }
+                            else if (cmdType === Parser_2.COMMAND_TYPE.C_CALL) {
+                                writer.writeCall(arg1, arg2);
                             }
                         }
                         writer.writeArithmetic(parser.current[0]);
