@@ -8,6 +8,7 @@ export default class CodeWriter {
   jumpCount = 0
   tmp = 5
   pointer = 3
+  funcCount = 0
   constructor(file: string) {
     this.stream = createWriteStream(file)
   }
@@ -107,6 +108,7 @@ export default class CodeWriter {
     }
   }
   pushStack() {
+    this.stream.write('D=M\n')
     this.stream.write('@SP\n')
     this.stream.write('A=M\n')
     this.stream.write('M=D\n')
@@ -114,10 +116,12 @@ export default class CodeWriter {
     this.stream.write('M=M+1\n')
   }
   writeInit() {
-    // this.stream.write('@256\n')
-    // this.stream.write('D=A\n')
-    // this.stream.write('@SP\n')
-    // this.stream.write('A=D\n')
+    this.stream.write('@256\n')
+    this.stream.write('D=A\n')
+    this.stream.write('@SP\n')
+    this.stream.write('M=D\n')
+
+    this.writeCall('Sys.init', 0)
   }
   writeLabel(label: string) {
     this.stream.write(`(${label})\n`)
@@ -133,7 +137,40 @@ export default class CodeWriter {
     this.stream.write('D;JGT\n')
   }
   writeCall(functionName: string, numArgs: number) {
-    //call assembly
+    this.stream.write(`@${functionName}_${this.funcCount}\n`)
+    this.pushStack()
+
+    this.stream.write('@LCL\n')
+    this.pushStack()
+
+    this.stream.write('@ARG\n')
+    this.pushStack()
+
+    this.stream.write('@THIS\n')
+    this.pushStack()
+
+    this.stream.write('@THAT\n')
+    this.pushStack()
+
+    this.stream.write('@5\n')
+    this.stream.write('D=A\n')
+    this.stream.write(`@${numArgs}\n`)
+    this.stream.write('D=D+A\n')
+
+    this.stream.write('@SP\n')
+    this.stream.write('D=M-D\n')
+    this.stream.write('@ARG\n')
+    this.stream.write('M=D\n')
+
+    this.stream.write('@SP\n')
+    this.stream.write('D=M\n')
+    this.stream.write('@LCL\n')
+    this.stream.write('M=D\n')
+
+    this.stream.write(`@${functionName}\n`)
+    this.stream.write('0;JMP\n')
+
+    this.writeLabel(`${functionName}_${this.funcCount}`)
   }
   writeReturn() {
     this.stream.write('@LCL\n')
@@ -187,7 +224,7 @@ export default class CodeWriter {
     this.stream.write('@LCL\n')
     this.stream.write('M=D\n')
 
-    this.stream.write('@14\n')
+    this.stream.write('@R14\n')
     this.stream.write('A=M\n')
     this.stream.write('0;JMP\n')
   }

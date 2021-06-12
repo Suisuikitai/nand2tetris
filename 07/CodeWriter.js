@@ -9,6 +9,7 @@ var CodeWriter = /** @class */ (function () {
         this.jumpCount = 0;
         this.tmp = 5;
         this.pointer = 3;
+        this.func_count = 0;
         this.stream = fs_1.createWriteStream(file);
     }
     CodeWriter.prototype.setFileName = function (fileName) {
@@ -108,6 +109,7 @@ var CodeWriter = /** @class */ (function () {
         }
     };
     CodeWriter.prototype.pushStack = function () {
+        this.stream.write('D=M\n');
         this.stream.write('@SP\n');
         this.stream.write('A=M\n');
         this.stream.write('M=D\n');
@@ -115,10 +117,11 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('M=M+1\n');
     };
     CodeWriter.prototype.writeInit = function () {
-        // this.stream.write('@256\n')
-        // this.stream.write('D=A\n')
-        // this.stream.write('@SP\n')
-        // this.stream.write('A=D\n')
+        this.stream.write('@256\n');
+        this.stream.write('D=A\n');
+        this.stream.write('@SP\n');
+        this.stream.write('M=D\n');
+        this.writeCall('Sys.init', 0);
     };
     CodeWriter.prototype.writeLabel = function (label) {
         this.stream.write("(" + label + ")\n");
@@ -134,7 +137,31 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('D;JGT\n');
     };
     CodeWriter.prototype.writeCall = function (functionName, numArgs) {
-        //call assembly
+        this.stream.write("@" + functionName + "_" + this.func_count + "\n");
+        this.pushStack();
+        this.stream.write('@LCL\n');
+        this.pushStack();
+        this.stream.write('@ARG\n');
+        this.pushStack();
+        this.stream.write('@THIS\n');
+        this.pushStack();
+        this.stream.write('@THAT\n');
+        this.pushStack();
+        this.stream.write('@5\n');
+        this.stream.write('D=A\n');
+        this.stream.write("@" + numArgs + "\n");
+        this.stream.write('D=D+A\n');
+        this.stream.write('@SP\n');
+        this.stream.write('D=M-D\n');
+        this.stream.write('@ARG\n');
+        this.stream.write('M=D\n');
+        this.stream.write('@SP\n');
+        this.stream.write('D=M\n');
+        this.stream.write('@LCL\n');
+        this.stream.write('M=D\n');
+        this.stream.write("@" + functionName + "\n");
+        this.stream.write('0;JMP\n');
+        this.writeLabel(functionName + "_" + this.func_count);
     };
     CodeWriter.prototype.writeReturn = function () {
         this.stream.write('@LCL\n');
@@ -179,7 +206,7 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('D=M\n');
         this.stream.write('@LCL\n');
         this.stream.write('M=D\n');
-        this.stream.write('@14\n');
+        this.stream.write('@R14\n');
         this.stream.write('A=M\n');
         this.stream.write('0;JMP\n');
     };
