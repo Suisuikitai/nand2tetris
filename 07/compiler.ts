@@ -1,16 +1,18 @@
 import Parser from './Parser'
 import { COMMAND_TYPE } from './Parser'
 import CodeWriter from './CodeWriter'
+import * as fs from 'fs'
+
 const argv = process.argv
-const inputFile = argv[2]
+const inputDir = argv[2]
 const asmFileName = argv[3]
 
-const main = async () => {
+const writer = new CodeWriter(asmFileName)
+writer.writeInit()
+const main = async (inputFile: string) => {
   const parser = new Parser(inputFile)
-  const writer = new CodeWriter(asmFileName)
-  let fileName = inputFile.split('/').slice(-1)[0]
-  writer.setFileName(fileName.slice(0, -3))
-  writer.writeInit()
+  // let fileName = inputFile.split('/').slice(-1)[0]
+  // writer.setFileName(fileName.slice(0, -3))
   await parser.advance((line: [string]) => {
     parser.current = line
     let arg1 = null,
@@ -43,4 +45,10 @@ const main = async () => {
   })
 }
 
-main()
+fs.readdirSync(inputDir, { withFileTypes: true })
+  .filter((dirent: fs.Dirent) => {
+    return dirent.isFile() && dirent.name.endsWith('.vm')
+  })
+  .map((dirent: fs.Dirent) => {
+    main(inputDir + dirent.name)
+  })
