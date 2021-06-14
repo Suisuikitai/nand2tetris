@@ -116,12 +116,12 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('M=M+1\n');
     };
     CodeWriter.prototype.writeInit = function () {
-        // this.stream.write('@256\n')
-        // this.stream.write('D=A\n')
-        // this.stream.write('@SP\n')
-        // this.stream.write('M=D\n')
+        this.stream.write('@256\n');
+        this.stream.write('D=A\n');
+        this.stream.write('@SP\n');
+        this.stream.write('M=D\n');
         // this.writeFunction('Sys.init', 0)
-        // this.writeCall('Sys.init', 0)
+        this.writeCall('Sys.init', 0);
     };
     CodeWriter.prototype.writeLabel = function (label) {
         this.stream.write("(" + label + ")\n");

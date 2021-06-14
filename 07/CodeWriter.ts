@@ -115,12 +115,12 @@ export default class CodeWriter {
     this.stream.write('M=M+1\n')
   }
   writeInit() {
-    // this.stream.write('@256\n')
-    // this.stream.write('D=A\n')
-    // this.stream.write('@SP\n')
-    // this.stream.write('M=D\n')
+    this.stream.write('@256\n')
+    this.stream.write('D=A\n')
+    this.stream.write('@SP\n')
+    this.stream.write('M=D\n')
     // this.writeFunction('Sys.init', 0)
-    // this.writeCall('Sys.init', 0)
+    this.writeCall('Sys.init', 0)
   }
   writeLabel(label: string) {
     this.stream.write(`(${label})\n`)
