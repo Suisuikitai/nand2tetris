@@ -89,7 +89,7 @@ var CodeWriter = /** @class */ (function () {
         //-1をstackに積む
         this.stream.write("(J_true" + this.jumpCount + ") //true\u306E\u30B8\u30E3\u30F3\u30D7\u7528\u306E\u30E9\u30D9\u30EB\n");
         this.focusStackTop();
-        this.stream.write('M=-1 //スタックに-1を積む\n');
+        this.stream.write('M=-1\n');
         this.stream.write("@END" + this.jumpCount + "\n");
         this.stream.write('0;JMP\n');
         //0をstackに積む
@@ -137,6 +137,7 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('D;JGT\n');
     };
     CodeWriter.prototype.writeCall = function (functionName, numArgs) {
+        this.stream.write("//Start callFunc " + functionName + "\n");
         this.stream.write("@" + functionName + "_" + this.funcCount + "\n");
         this.stream.write('D=A\n');
         this.pushStack();
@@ -167,8 +168,10 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write("@" + functionName + "\n");
         this.stream.write('0;JMP\n');
         this.writeLabel(functionName + "_" + this.funcCount);
+        this.stream.write("//Fin callFunc " + functionName + "\n");
     };
     CodeWriter.prototype.writeReturn = function () {
+        this.stream.write('//writeReturn\n');
         this.stream.write('@LCL\n');
         this.stream.write('D=M\n');
         this.stream.write('@R13\n');
@@ -214,9 +217,10 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('@R14\n');
         this.stream.write('A=M\n');
         this.stream.write('0;JMP\n');
+        this.stream.write('//Fin writeReturn\n');
     };
     CodeWriter.prototype.writeFunction = function (functionName, numLocals) {
-        //function assembly
+        this.stream.write("//Start writeFunction (" + functionName + ")\n");
         this.stream.write("(" + functionName + ")\n");
         this.stream.write('@SP\n');
         this.stream.write('A=M\n');
@@ -226,6 +230,7 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('M=M+1\n');
             this.stream.write('A=M\n');
         }
+        this.stream.write("//writeFunction Fin(" + functionName + ")\n");
     };
     CodeWriter.prototype.push = function (segment, index) {
         if (segment === 'constant') {

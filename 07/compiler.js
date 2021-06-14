@@ -83,7 +83,8 @@ var main = function (inputFile) { return __awaiter(void 0, void 0, void 0, funct
                                 writer.writeCall(arg1, arg2);
                             }
                         }
-                        writer.writeArithmetic(parser.current[0]);
+                        if (cmdType === Parser_2.COMMAND_TYPE.C_ARITHMETIC)
+                            writer.writeArithmetic(parser.current[0]);
                     })];
             case 1:
                 // let fileName = inputFile.split('/').slice(-1)[0]
@@ -95,11 +96,8 @@ var main = function (inputFile) { return __awaiter(void 0, void 0, void 0, funct
 }); };
 fs.readdirSync(inputDir, { withFileTypes: true })
     .filter(function (dirent) {
-    console.log(dirent.name);
-    console.log(dirent.isFile());
     return dirent.isFile() && dirent.name.endsWith('.vm');
 })
     .map(function (dirent) {
-    console.log(dirent.name);
-    main(inputDir + dirent.name);
+    main(inputDir + '/' + dirent.name);
 });

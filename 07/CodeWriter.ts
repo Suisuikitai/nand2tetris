@@ -87,7 +87,7 @@ export default class CodeWriter {
     //-1をstackに積む
     this.stream.write(`(J_true${this.jumpCount}) //trueのジャンプ用のラベル\n`)
     this.focusStackTop()
-    this.stream.write('M=-1 //スタックに-1を積む\n')
+    this.stream.write('M=-1\n')
     this.stream.write(`@END${this.jumpCount}\n`)
     this.stream.write('0;JMP\n')
 
@@ -136,6 +136,7 @@ export default class CodeWriter {
     this.stream.write('D;JGT\n')
   }
   writeCall(functionName: string, numArgs: number) {
+    this.stream.write(`//Start callFunc ${functionName}\n`)
     this.stream.write(`@${functionName}_${this.funcCount}\n`)
     this.stream.write('D=A\n')
     this.pushStack()
@@ -175,8 +176,10 @@ export default class CodeWriter {
     this.stream.write('0;JMP\n')
 
     this.writeLabel(`${functionName}_${this.funcCount}`)
+    this.stream.write(`//Fin callFunc ${functionName}\n`)
   }
   writeReturn() {
+    this.stream.write('//writeReturn\n')
     this.stream.write('@LCL\n')
     this.stream.write('D=M\n')
     this.stream.write('@R13\n')
@@ -231,9 +234,10 @@ export default class CodeWriter {
     this.stream.write('@R14\n')
     this.stream.write('A=M\n')
     this.stream.write('0;JMP\n')
+    this.stream.write('//Fin writeReturn\n')
   }
   writeFunction(functionName: string, numLocals: number) {
-    //function assembly
+    this.stream.write(`//Start writeFunction (${functionName})\n`)
     this.stream.write(`(${functionName})\n`)
     this.stream.write('@SP\n')
     this.stream.write('A=M\n')
@@ -243,6 +247,7 @@ export default class CodeWriter {
       this.stream.write('M=M+1\n')
       this.stream.write('A=M\n')
     }
+    this.stream.write(`//writeFunction Fin(${functionName})\n`)
   }
   push(segment: string | null, index: number) {
     if (segment === 'constant') {

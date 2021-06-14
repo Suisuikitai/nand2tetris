@@ -41,7 +41,8 @@ const main = async (inputFile: string) => {
         writer.writeCall(arg1, arg2)
       }
     }
-    writer.writeArithmetic(parser.current[0])
+    if (cmdType === COMMAND_TYPE.C_ARITHMETIC)
+      writer.writeArithmetic(parser.current[0])
   })
 }
 
@@ -50,5 +51,5 @@ fs.readdirSync(inputDir, { withFileTypes: true })
     return dirent.isFile() && dirent.name.endsWith('.vm')
   })
   .map((dirent: fs.Dirent) => {
-    main(inputDir + dirent.name)
+    main(inputDir + '/' + dirent.name)
   })
