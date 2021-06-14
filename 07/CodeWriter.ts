@@ -137,7 +137,7 @@ export default class CodeWriter {
   }
   writeCall(functionName: string, numArgs: number) {
     this.stream.write(`@${functionName}_${this.funcCount}\n`)
-    this.stream.write('D=M\n')
+    this.stream.write('D=A\n')
     this.pushStack()
 
     this.stream.write('@LCL\n')

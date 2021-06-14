@@ -29,7 +29,7 @@ D=M
 A=A+1
 M=D
 @Sys.main_0
-D=M
+D=A
 @SP
 A=M
 M=D
@@ -194,7 +194,7 @@ M=D
 @SP
 M=M+1
 @Sys.add12_0
-D=M
+D=A
 @SP
 A=M
 M=D

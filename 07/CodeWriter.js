@@ -138,7 +138,7 @@ var CodeWriter = /** @class */ (function () {
     };
     CodeWriter.prototype.writeCall = function (functionName, numArgs) {
         this.stream.write("@" + functionName + "_" + this.funcCount + "\n");
-        this.stream.write('D=M\n');
+        this.stream.write('D=A\n');
         this.pushStack();
         this.stream.write('@LCL\n');
         this.stream.write('D=M\n');
