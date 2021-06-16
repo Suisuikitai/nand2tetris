@@ -258,10 +258,7 @@ export default class CodeWriter {
       this.stream.write(`@R${this.tmp + index}\n`)
       this.stream.write('D=M\n')
     } else if (segment === 'static') {
-      this.stream.write('@16\n')
-      this.stream.write('D=A\n')
-      this.stream.write(`@${index}\n`)
-      this.stream.write('A=D+A\n')
+      this.stream.write(`@${this.input_file}.${index}\n`)
       this.stream.write('D=M\n')
     } else if (segment === 'pointer') {
       this.stream.write(`@${this.pointer}\n`)
@@ -291,14 +288,19 @@ export default class CodeWriter {
   }
   pop(segment: string | null, index: number) {
     this.fetchStackVal()
-    let addr = ''
+    if (segment === 'static') {
+      this.stream.write(`@${this.input_file}.${index}\n`)
+      this.stream.write('M=D\n')
+      return
+    }
+
     if (segment === 'temp') {
       this.stream.write('@R5\n')
-    } else if (segment === 'static') {
-      this.stream.write('@16\n')
     } else if (segment === 'pointer') {
       this.stream.write(`@${this.pointer}\n`)
     } else {
+      let addr = ''
+
       if (segment === 'local') {
         addr = 'LCL'
       } else if (segment === 'that') {

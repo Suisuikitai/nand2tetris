@@ -243,10 +243,7 @@ var CodeWriter = /** @class */ (function () {
             this.stream.write('D=M\n');
         }
         else if (segment === 'static') {
-            this.stream.write('@16\n');
-            this.stream.write('D=A\n');
-            this.stream.write("@" + index + "\n");
-            this.stream.write('A=D+A\n');
+            this.stream.write("@" + this.input_file + "." + index + "\n");
             this.stream.write('D=M\n');
         }
         else if (segment === 'pointer') {
@@ -281,17 +278,19 @@ var CodeWriter = /** @class */ (function () {
     };
     CodeWriter.prototype.pop = function (segment, index) {
         this.fetchStackVal();
-        var addr = '';
+        if (segment === 'static') {
+            this.stream.write("@" + this.input_file + "." + index + "\n");
+            this.stream.write('M=D\n');
+            return;
+        }
         if (segment === 'temp') {
             this.stream.write('@R5\n');
-        }
-        else if (segment === 'static') {
-            this.stream.write('@16\n');
         }
         else if (segment === 'pointer') {
             this.stream.write("@" + this.pointer + "\n");
         }
         else {
+            var addr = '';
             if (segment === 'local') {
                 addr = 'LCL';
             }

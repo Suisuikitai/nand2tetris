@@ -46,14 +46,14 @@ var asmFileName = argv[3];
 var writer = new CodeWriter_1["default"](asmFileName);
 writer.writeInit();
 var main = function (inputFile) { return __awaiter(void 0, void 0, void 0, function () {
-    var parser;
+    var parser, fileName;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 parser = new Parser_1["default"](inputFile);
-                // let fileName = inputFile.split('/').slice(-1)[0]
-                // writer.setFileName(fileName.slice(0, -3))
+                fileName = inputFile.split('/').slice(-1)[0];
                 return [4 /*yield*/, parser.advance(function (line) {
+                        writer.setFileName(fileName.slice(0, -3));
                         parser.current = line;
                         var arg1 = null, arg2 = null;
                         var cmdType = parser.commandType();
@@ -87,8 +87,6 @@ var main = function (inputFile) { return __awaiter(void 0, void 0, void 0, funct
                             writer.writeArithmetic(parser.current[0]);
                     })];
             case 1:
-                // let fileName = inputFile.split('/').slice(-1)[0]
-                // writer.setFileName(fileName.slice(0, -3))
                 _a.sent();
                 return [2 /*return*/];
         }

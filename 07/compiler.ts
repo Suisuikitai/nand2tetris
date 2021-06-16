@@ -11,9 +11,9 @@ const writer = new CodeWriter(asmFileName)
 writer.writeInit()
 const main = async (inputFile: string) => {
   const parser = new Parser(inputFile)
-  // let fileName = inputFile.split('/').slice(-1)[0]
-  // writer.setFileName(fileName.slice(0, -3))
+  const fileName = inputFile.split('/').slice(-1)[0]
   await parser.advance((line: [string]) => {
+    writer.setFileName(fileName.slice(0, -3))
     parser.current = line
     let arg1 = null,
       arg2 = null
