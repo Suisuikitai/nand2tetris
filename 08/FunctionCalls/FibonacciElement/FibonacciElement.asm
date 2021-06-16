@@ -54,6 +54,73 @@ M=D
 0;JMP
 (Sys.init_0)
 //Fin callFunc Sys.init
+//Start writeFunction (Sys.init)
+(Sys.init)
+@SP
+A=M
+//writeFunction Fin(Sys.init)
+@4
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//Start callFunc Main.fibonacci
+@Main.fibonacci_1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@5
+D=A
+@1
+D=D+A
+@SP
+D=M-D
+@ARG
+M=D
+@SP
+D=M
+@LCL
+M=D
+@Main.fibonacci
+0;JMP
+(Main.fibonacci_1)
+//Fin callFunc Main.fibonacci
+(WHILE)
+@WHILE
+0;JMP
 //Start writeFunction (Main.fibonacci)
 (Main.fibonacci)
 @SP
@@ -191,7 +258,7 @@ D=M-D
 A=M-1
 M=D
 //Start callFunc Main.fibonacci
-@Main.fibonacci_0
+@Main.fibonacci_2
 D=A
 @SP
 A=M
@@ -240,7 +307,7 @@ D=M
 M=D
 @Main.fibonacci
 0;JMP
-(Main.fibonacci_0)
+(Main.fibonacci_2)
 //Fin callFunc Main.fibonacci
 @ARG
 A=M
@@ -268,7 +335,7 @@ D=M-D
 A=M-1
 M=D
 //Start callFunc Main.fibonacci
-@Main.fibonacci_0
+@Main.fibonacci_3
 D=A
 @SP
 A=M
@@ -317,7 +384,7 @@ D=M
 M=D
 @Main.fibonacci
 0;JMP
-(Main.fibonacci_0)
+(Main.fibonacci_3)
 //Fin callFunc Main.fibonacci
 @SP
 M=M-1
@@ -379,70 +446,3 @@ M=D
 A=M
 0;JMP
 //Fin writeReturn
-//Start writeFunction (Sys.init)
-(Sys.init)
-@SP
-A=M
-//writeFunction Fin(Sys.init)
-@4
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//Start callFunc Main.fibonacci
-@Main.fibonacci_0
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@5
-D=A
-@1
-D=D+A
-@SP
-D=M-D
-@ARG
-M=D
-@SP
-D=M
-@LCL
-M=D
-@Main.fibonacci
-0;JMP
-(Main.fibonacci_0)
-//Fin callFunc Main.fibonacci
-(WHILE)
-@WHILE
-0;JMP

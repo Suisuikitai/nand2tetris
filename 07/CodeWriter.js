@@ -137,6 +137,7 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('D;JGT\n');
     };
     CodeWriter.prototype.writeCall = function (functionName, numArgs) {
+        //呼び出し元に戻れていない
         this.stream.write("//Start callFunc " + functionName + "\n");
         this.stream.write("@" + functionName + "_" + this.funcCount + "\n");
         this.stream.write('D=A\n');
@@ -167,7 +168,7 @@ var CodeWriter = /** @class */ (function () {
         this.stream.write('M=D\n');
         this.stream.write("@" + functionName + "\n");
         this.stream.write('0;JMP\n');
-        this.writeLabel(functionName + "_" + this.funcCount);
+        this.writeLabel(functionName + "_" + this.funcCount++);
         this.stream.write("//Fin callFunc " + functionName + "\n");
     };
     CodeWriter.prototype.writeReturn = function () {
