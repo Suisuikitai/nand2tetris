@@ -12,4 +12,5 @@ CHIP Add16 {
 
     PARTS:
     //// Replace this comment with your code.
+    FullAdder(a=a[15], b=b[15], c=0, sum=out[15], carry=carry0);
 }
